@@ -1,57 +1,39 @@
-# music_reviews
-
-**Team**: [Lee Mackey](https://github.com/glmack) and [Anna Zubova](https://github.com/AnnaLara)
-
-## Structure
-
-**Jupyter notebook for questions 1-3**: [link](https://github.com/glmack/music_reviews/blob/master/tests_1_to_3.ipynb)
-
-**Jupyter notebook for classification algorithms testing**: [link](https://github.com/glmack/music_reviews/blob/master/binomial_pitchfork_content_sandbox-Copy1.ipynb)
+## Audiopinion
+Audiopinion conducts NLP classification and associated hypothesis testing using Pitchfork music reviews
 
 **Presentation**: [link](https://docs.google.com/presentation/d/1SeczrIDfq1cEGCOKwxKE1LMpYVLcog686coTyoyuS88/edit#slide=id.g59f5cd01eb_0_16)
 
 Functions used in the jupyter notebook can be found in the `functions.py` file.
 
+### **Data understanding**
 
-## Project overview
+The data source was Pitchfork music reviews. A PostgreSQL database was created to store the data, via a migration from a SQLite database using a `pgloader` migration tool.
 
-**Project goal**: Explore Pitchfork music review dataset and apply different methods of hypothesis testing to [music reviews dataset](https://www.kaggle.com/nolanbconaway/pitchfork-data) to produce valuable insights.
+Jupyter notebook for hypothesis tests: [link](https://github.com/glmack/music_reviews/blob/master/tests_1_to_3.ipynb)
 
-**Data exploration**
+Jupyter notebook for classification algorithms testing: [link](https://github.com/glmack/music_reviews/blob/master/binomial_pitchfork_content_sandbox-Copy1.ipynb)
 
-The raw data was contained in a sqlite database with no defined relations between tables. We loaded the data and converted it to a Postgres database using `pgloader` migration tool.
+### **Data preparation**
+We first apply standard NLP text pre-processing (e.g. tokenization) to the review text/. We represent the vocabulary, which we limited to the top 1000 salient words, through tf-idf (term frequency inverse document frequency) using scikit-learn.
 
-We used SQL commands for data querying and exploration as well as `pandas` library.
+### **Modeling**
 
 **Hypothesis testing**
-
 We explored the relationships between music genres, authors and review scores.
 
-We conducted 3 standsrd statistical tests to answer the following questions:
+We apply statistical tests (t-texts and z-tests) to answer the following questions:
 
-- Is there a statistical difference between 'metal' and 'jazz' music genres?
-- If the same person does the review, does he/she score genres differently, in particular, 'metal' and 'jazz' genres?
-- Looking at the scores produced by one author, are they different from the average scores given by the total of authors?
+- Is there a statistical difference between different music genres?
+- If there a statistical difference in the ratings of different genres by the same reviewer?
+- Is there a statistical difference between the scores produced by one author and the average scores given by the total of authors?
 
 To answer these questions we used Student t-test as well as a z-test to produce p-values necessary to reject or accept null hypothesis. Chosen level of confidence was 95%. The reason to choose this level was to leave a reasonable margin of error considering:
 
 - Subjective nature of reviewing music albums (thus, we cannot make a confidence interval too high)
 
-- We wanted to be reasonably certain in our evaluations
+Findings
 
-
-To peform t-test and z-test we assumed that data is:
-
-- Approximately normally distribuited: we checked the distribution plotting histograms.
-    
-- Collected randomly: we collected random samples for each test.
-    
-- The observations are independent: there is no reason to believe that the observations are not independent.
-
-
-## Findings
-
-### Question 1: Is there a statistical difference between 'metal' and 'jazz' music genres?
+Question 1: Is there a statistical difference between 'metal' and 'jazz' music genres?
 
 To compare 'metal' and 'jazz' scores we looked at the scores of metal and jazz genres, taking a random sample of the size 50 from each group.
 
@@ -73,7 +55,7 @@ To answer this questions we performed a 2-tailed paired t-test to see if multige
 
 Confidence level: 95%
 
-The resulting p-value of p-value is:  0.953 was higher than out significance level aplha=0.05, so we could not reject the null hypothesis.
+The resulting p-value of p-value is:  0.953 was higher than our significance level aplha=0.05, so we could not reject the null hypothesis.
 
 ### Question 3: Looking at the scores produced by one author, are they different from the average scores given by the total of authors? 
 
@@ -87,21 +69,10 @@ In this series of experiments 36 out of 85 (around 40%) authors have highter or 
 
 This workflow uses a McNemar statistic to compare two classification algorithms, a naive bayes classifier and a support vector machine, on a binomial document text classification task using a common corpus of 20,000 music reviews. The objectives of this workflow, which are part of a larger project, are to a) explore and test hypotheses on text classification algorithms on common domains, in terms of relative performance advantages in different scenarios, and b) explore test statistics for comparison of text classification algorithms in varied contexts. The question that we sought to answer is whether the naive bayes classifier and the support vector machine agreed in their discrete predictions of music genres, as either rock or non-rock.
 
-##### Data and & Text representation
-We asked this question of 20,000 music reviews, which were roughly evenly divided between rock music reviews and, on the other hand, non-rock music reviews that we created from reviews representing multiple genres.
-The vocabulary, later limited to 1000 salient words, were tokenized, trained and represented through tf-idf (term frequency inverse document frequency) using sci-kit learn
-
-##### Models
+##### Model comparison
 The models used for comparison were a naive bayes classifier and a support vector machine, using scikit-learn implementation.
 
-##### Study Design
+##### Evaluation
 The null hypothesis for this test, following Dror et al, is that the marginal probability for each outcome (label ‘rock or label ‘not_rock”) is the same for both algorithms. When applying both algorithms on the same music reviews, we expect them to be correct/incorrect on the same proportion of items. 
 Test Statistic: This test used statsmodel’s implementation of the McNemar’s statistic, a non-parametric statistic for use in comparing two classifiers on one common domain. This test is appropriate for binary classification tasks on a common domain. The McNemar test has been used in such NLP works and, following Japkowicz, can be thought of as the “non-parametric counterpart of the t-test”. 
-The finding: was that the two models did not “agree” in their predictions. he marginal probability of each outcome was not the same for both algorithms.
-
-The primary resources consulted in developing this readme include:
-Japkowicz and Shah. 2011. Evaluating Learning Algorithms: A Classification Perspective.
-Japkowicz. Performance Evaluation for Learning Algorithms. Presentation. https://www.icmla-conference.org/icmla11/PE_Tutorial.pdf
-Dror, Rotem; Baumer Segev Shlomov Roi Reichart. 2018. The Hitchhiker’s Guide to Testing Statistical Significance in Natural Language Processing
-Raschka, Sebastian. Model Evaluation, Model Selection, and Algorithm Selection in Machine Learning
-Dietterich. 1997. Approximate Statistical Tests for Comparing Supervised Classification Learning Algorithms.	
+The finding: was that the two models did not “agree” in their predictions. The marginal probability of each outcome was not the same for both algorithms.	
