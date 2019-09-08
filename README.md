@@ -72,7 +72,7 @@ This workflow uses a McNemar statistic to compare two classification algorithms,
 ##### Model comparison
 The models used for comparison were a naive bayes classifier and a support vector machine, using scikit-learn implementation.
 
-##### Evaluation
+### Evaluation
 The null hypothesis for this test, following Dror et al, is that the marginal probability for each outcome (label ‘rock or label ‘not_rock”) is the same for both algorithms. When applying both algorithms on the same music reviews, we expect them to be correct/incorrect on the same proportion of items. 
 Test Statistic: This test used statsmodel’s implementation of the McNemar’s statistic, a non-parametric statistic for use in comparing two classifiers on one common domain. This test is appropriate for binary classification tasks on a common domain. The McNemar test has been used in such NLP works and, following Japkowicz, can be thought of as the “non-parametric counterpart of the t-test”. 
 The finding: was that the two models did not “agree” in their predictions. The marginal probability of each outcome was not the same for both algorithms.	
